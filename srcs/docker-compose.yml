@@ -1,0 +1,64 @@
+version:   "3"
+services:
+  mysql:
+    container_name: my_mariadb
+    build: ./requirements/mariadb
+    volumes:
+      - database:/var/lib/mysql
+    ports: 
+      - "3306"
+    restart: always
+    env_file: 
+      - .env
+    networks:
+      - backend
+
+
+  wordpress:
+    depends_on:
+      - mysql
+    container_name: my_wp-php
+    build: ./requirements/wordpress
+    volumes:
+      - wp:/var/www/wordpress
+    ports:
+      - "9000"
+    restart: always
+    env_file: 
+      - .env
+    networks:
+      - backend
+      - frontend
+
+  nginx:
+    depends_on: 
+      - wordpress
+    container_name: my_nginx
+    build: ./requirements/nginx
+    volumes:
+      - wp:/var/www/wordpress
+    ports:
+      - "443:443"
+    restart: always
+    env_file: 
+      - .env
+    networks:
+      - frontend
+
+networks:
+  backend:
+  frontend:
+
+volumes:
+  database:
+    driver: local
+    driver_opts:
+      o: bind
+      type: volume
+      device: /home/pnielly/data/database
+  wp:
+    driver: local
+    driver_opts:
+      o: bind
+      type: volume
+      device: /home/pnielly/data/wp

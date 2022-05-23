@@ -1,0 +1,5 @@
+Step 1: docker exec -ti <container_name> sh
+Step 2: [FROM THE CONTAINER] ps -aux
+Step 3: [FROM THE SHELL] docker exec -ti <container_name> kill PID1 PID2 PID3 ...
+Step 4: make inspect
+Step 4 bis: docker ps (and check the time in STATUS)
